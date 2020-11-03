@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGameLibrary.Util;
 
 namespace BreakoutTest
 {
@@ -21,7 +22,7 @@ namespace BreakoutTest
         SpriteBatch spriteBatch;
         SpriteFont spriteFont;
         string winLossStateText;
-        bool isGameOver;
+        public bool isGameOver;
 
         /// <summary>
         /// BlockManager hold a list of blocks and handles updating, drawing a block collision
@@ -37,11 +38,14 @@ namespace BreakoutTest
             this.ball = b;
             // CHANGED TO 1 FROM -1
             ScoreManager.Level = 1;
+    
         }
 
         public override void Initialize()
         {
             LoadLevel();
+            spriteBatch = new SpriteBatch(Game.GraphicsDevice);
+            spriteFont = Game.Content.Load<SpriteFont>("Arial");
             base.Initialize();
         }
 
@@ -50,7 +54,10 @@ namespace BreakoutTest
         /// </summary>
         protected virtual void LoadLevel()
         {
-            CreateBlockArrayByWidthAndHeight(24, 2, 1);
+            int arrayWidth = 24;
+            int arrayHeight = 2;
+            int arrayDepth = 1;
+            CreateBlockArrayByWidthAndHeight(arrayWidth, arrayHeight, arrayDepth);
         }
 
         /// <summary>
@@ -82,7 +89,7 @@ namespace BreakoutTest
             UpdateCheckBlocksForCollision(gameTime);
             UpdateBlocks(gameTime);
             UpdateRemoveDisabledBlocks();
-            CheckWinLoss();
+            CheckWinLoss(gameTime);
 
             base.Update(gameTime);
         }
@@ -136,27 +143,53 @@ namespace BreakoutTest
             }
         }
 
-        private void CheckWinLoss()
+        private void CheckWinLoss(GameTime gameTime)
         {
             if(!Blocks.Any())
             {
-                spriteBatch = new SpriteBatch(Game.GraphicsDevice);
-                spriteFont = Game.Content.Load<SpriteFont>("Arial");
-                winLossStateText = "You Win!";
-                isGameOver = true;
+                Win(gameTime);
                 //WIN
             }
-            else if(ScoreManager.Lives == 0)
+            else if(ScoreManager.Lives <= 0)
             {
-                spriteBatch = new SpriteBatch(Game.GraphicsDevice);
-                spriteFont = Game.Content.Load<SpriteFont>("Arial");
-                winLossStateText = "You Lose!";
-                isGameOver = true;
+                Loss(gameTime);
                 //LOSS
             }
             else
             {
                 isGameOver = false;
+            }
+        }
+
+        private void Win(GameTime gameTime)
+        {
+            InputHandler input = (InputHandler)this.Game.Services.GetService(typeof(IInputHandler));
+            winLossStateText = "You Win!";
+            isGameOver = true;
+            if (input.KeyboardState.IsKeyDown(Keys.F))
+            {
+                ScoreManager.Level++;
+                ScoreManager.Lives = 5;
+                LoadLevel();
+                isGameOver = false;
+                ball.resetBall(gameTime);
+            }
+        }
+
+        private void Loss(GameTime gameTime)
+        {
+            ScoreManager.Lives = 0;
+            InputHandler input = (InputHandler)this.Game.Services.GetService(typeof(IInputHandler));
+            winLossStateText = "You Lose!";
+            isGameOver = true;
+            if (input.KeyboardState.IsKeyDown(Keys.F))
+            {
+                ScoreManager.Score = 0;
+                ScoreManager.Level = 1;
+                ScoreManager.Lives = 5;
+                LoadLevel();
+                isGameOver = false;
+                ball.resetBall(gameTime);
             }
         }
 
@@ -172,13 +205,16 @@ namespace BreakoutTest
                     block.Draw(gameTime);
             }
 
-            if(isGameOver)
-            {
-                spriteBatch.Begin();
-                spriteBatch.DrawString(spriteFont, winLossStateText, new Vector2(Game.GraphicsDevice.Viewport.Width / 1.15f, Game.GraphicsDevice.Viewport.Height / 1.06f), Color.Red);
-                spriteBatch.End();
+            spriteBatch.Begin();
+
+            if (isGameOver)
+            {              
+                spriteBatch.DrawString(spriteFont, winLossStateText, new Vector2(Game.GraphicsDevice.Viewport.Width / 1.13f, Game.GraphicsDevice.Viewport.Height / 1.155f), Color.Red);
+                spriteBatch.DrawString(spriteFont, "Press F to continue", new Vector2(Game.GraphicsDevice.Viewport.Width / 1.27f, Game.GraphicsDevice.Viewport.Height/1.11f), Color.White);               
             }
-            
+            spriteBatch.DrawString(spriteFont, "Press G to slingshot the ball!", new Vector2(Game.GraphicsDevice.Viewport.Width / 80, Game.GraphicsDevice.Viewport.Height / 1.06f), Color.Magenta);
+            spriteBatch.DrawString(spriteFont, "Press Space to slow time!", new Vector2(Game.GraphicsDevice.Viewport.Width / 1.4f, Game.GraphicsDevice.Viewport.Height / 1.06f), Color.Yellow);
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }

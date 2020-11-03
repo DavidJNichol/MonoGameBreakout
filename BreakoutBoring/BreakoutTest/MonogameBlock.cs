@@ -26,18 +26,22 @@ namespace BreakoutTest
             //set { this.block.BlockState = this.blockstate = value; }
         }
 
-        public enum BlockType
-        {
-            Regular,
-            Special
-        }
-
         public MonogameBlock(Game game)
         : base(game)
         {
             this.block = new Block();
-            NormalTextureName = "block_blue";
-            HitTextureName = "block_bubble";
+
+            // different block colors
+            if (ScoreManager.Level % 2 == 0)
+            {
+                NormalTextureName = "block_blue";
+                HitTextureName = "block_red";
+            }
+            else
+            {
+                NormalTextureName = "block_yellow";
+                HitTextureName = "block_bubble";
+            }           
         }
 
         protected virtual void updateBlockTexture()

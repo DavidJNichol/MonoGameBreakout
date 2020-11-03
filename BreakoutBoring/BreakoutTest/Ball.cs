@@ -22,6 +22,8 @@ namespace BreakoutTest
 
         Random random;
 
+        public int randSpeed;
+
         public Ball(Game game)
             : base(game)
         {
@@ -48,7 +50,7 @@ namespace BreakoutTest
         public void LaunchBall(GameTime gameTime, Vector2 paddleDirection)
         {
             random = new Random();
-            int randSpeed = random.Next(225,255);
+            randSpeed = random.Next(325,355);
             double randAngle = random.NextDouble() * MathHelper.TwoPi;
             
             this.Speed = randSpeed;
@@ -66,7 +68,7 @@ namespace BreakoutTest
             base.LoadContent();
         }
 
-        private void resetBall(GameTime gameTime)
+        public void resetBall(GameTime gameTime)
         {
             this.Speed = 0;
             this.State =  BallState.OnPaddleStart;
@@ -115,9 +117,11 @@ namespace BreakoutTest
             }
         }
 
+  
+
         public void Reflect(MonogameBlock block)
         {
-            this.Direction.Y *= -random.Next(1,2); //TODO check for side collision with block
+            this.Direction.Y *= -random.Next(1,2); 
         }
 
     }

@@ -237,7 +237,7 @@ namespace MonoGameLibrary.Util
         /// <param name="s">String to add to the console</param>
         public void GameConsoleWrite(string s)
         {
-            gameConsoleText.Add(s);
+           // gameConsoleText.Add(s);
         }
 
         //Console State

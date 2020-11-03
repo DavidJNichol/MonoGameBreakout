@@ -23,7 +23,7 @@ namespace BreakoutTest
         public Paddle(Game game, Ball b)
             : base(game)
         {
-            this.Speed = 360;
+            this.Speed = 380;
             this.ball = b;
             controller = new PaddleController(game, ball);
 
@@ -57,6 +57,9 @@ namespace BreakoutTest
 
         public override void Update(GameTime gameTime)
         {
+            //Movement from controller
+            controller.HandleInput(gameTime, this.Game);
+
             //Update Collision Rect
             collisionRectangle = new Rectangle((int)this.Location.X, (int)this.Location.Y, this.spriteTexture.Width, 1);
 
@@ -71,10 +74,7 @@ namespace BreakoutTest
                     UpdateCheckBallCollision();
                     break;
             }
-
-            //Movement from controller
-            controller.HandleInput(gameTime);
-
+          
             this.Direction = controller.Direction;
             this.Location += this.Direction * (this.Speed * gameTime.ElapsedGameTime.Milliseconds / 1000);
 
@@ -96,7 +96,7 @@ namespace BreakoutTest
             if (collisionRectangle.Intersects(ball.LocationRect))
             {
                 //TODO Change angle based on location of collision or direction of paddle
-                //ball.Direction.Y *= -1;
+                ball.Direction.Y *= -1;
                 UpdateBallCollisionBasedOnPaddleImpactLocation();
                 UpdateBallCollisionRandomFuness();
                 console.GameConsoleWrite("Paddle collision ballLoc:" + ball.Location + " paddleLoc:" + this.Location.ToString());
@@ -131,11 +131,11 @@ namespace BreakoutTest
             //Change angle based on paddle movement
             if (this.Direction.X > 0)
             {
-                ball.Direction.X += .3f;
+                ball.Direction.X += .1f;
             }
             if (this.Direction.X < 0)
             {
-                ball.Direction.X -= .3f;
+                ball.Direction.X -= .1f;
             }
             //Change anlge based on side of paddle
             //First Third

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using MonoGameLibrary.Util;
 using Microsoft.Xna.Framework.Input;
+using System.Threading;
 
 namespace BreakoutTest
 {
@@ -22,7 +23,7 @@ namespace BreakoutTest
             this.ball = ball;   //need refernce to ball to be able to lanch ball could possibly use delegate here
         }
 
-        public void HandleInput(GameTime gametime)
+        public void HandleInput(GameTime gametime, Game game)
         {
             this.Direction = Vector2.Zero;  //Start with no direction on each new upafet
 
@@ -43,6 +44,44 @@ namespace BreakoutTest
                 if (ball.State == BallState.OnPaddleStart) //Only Launch Ball is it's on paddle
                     this.ball.LaunchBall(gametime, this.Direction);
             }
+
+            HandleTimeSlow();
         }
+
+        private void HandleTimeSlow()
+        {
+            // ball.speed = 50
+            if (input.KeyboardState.IsKeyDown(Keys.Space))
+            {
+                SlowTime(ball);
+            }
+            else if(input.KeyboardState.IsKeyDown(Keys.G))
+            {
+                FlipGravity();
+            }
+            // Return to normal speed after release
+            if(input.KeyboardState.HasReleasedKey(Keys.Space))
+            {
+                ball.Speed = ball.randSpeed;
+            }       
+            else if(input.KeyboardState.HasReleasedKey(Keys.G))
+            {
+                ball.Speed = ball.randSpeed + 250;
+            }            
+        }
+
+        private void SlowTime(Ball ball)
+        {
+            ball.Speed = 50;
+        }
+
+        private void FlipGravity()
+        {
+            ball.Speed = 0;
+            ball.Speed -= 20;
+        }
+
     }
 }
+    
+
