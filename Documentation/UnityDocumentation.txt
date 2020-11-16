@@ -1,0 +1,57 @@
+************************************************************************
+Changes:
+
+* Added music
+
+* Added ball launch system 
+
+* Added random direction on ball launch based on sin of 2(pi) * RandomAngle between .4f and .9f
+
+* 5 lives instead of 3
+
+* Changed background color, block colors per level
+
+* Increased block count
+
+* Added state systems for ball and block manager
+
+* Added ball start on paddle system
+
+* Fixed ball collision bouncing off walls
+
+* Fixed paddle going halfway off screen
+
+* Added variance in ball direction based on paddle impact location (1st third etc) 
+
+* Fixed bricks not being added to removal list after being destroyed
+
+* Fixed score going below 0
+
+* Fixed blocks not disappearing after loading new level
+
+* Added new mechanics like slingshot and slow time
+
+* Added a lose and win and a level system
+
+Why I think these changes make the game more fun:
+-More random
+-More agency given to the player through interactive mechanics
+-More fast paced
+************************************************************************
+
+************************************************************************
+Structural Changes:
+The only asset I needed to add was the audio. Unity makes it super easy so I never had to add scripts for it, it lives in the scene.
+************************************************************************
+
+************************************************************************
+State Changes:
+UnityBlock.Blockstate was not returning its proper blockstate so I fixed it to return this.Blockstate instead of returning Blockstate = blockstate. I added a winloss state into blockmanager called isGameOver to communicate with other classes whether or not the game has ended.
+************************************************************************
+
+************************************************************************
+Maintainability: 
+
+OOP-wise the changes I made didn't hurt it too bad. The biggest issue was I had to force blockmanager to have a dependency on the ball. More comments wouldn't hurt either. I would give my maintainability a 7.82/10. 
+
+************************************************************************

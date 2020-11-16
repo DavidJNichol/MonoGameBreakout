@@ -38,6 +38,7 @@ namespace BreakoutTest
             this.ball = b;
             // CHANGED TO 1 FROM -1
             ScoreManager.Level = 1;
+            isGameOver = false;
     
         }
 
@@ -89,7 +90,9 @@ namespace BreakoutTest
             UpdateCheckBlocksForCollision(gameTime);
             UpdateBlocks(gameTime);
             UpdateRemoveDisabledBlocks();
-            CheckWinLoss(gameTime);
+            
+            if(!isGameOver)
+                CheckWinLoss(gameTime);
 
             base.Update(gameTime);
         }
